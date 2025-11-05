@@ -1,0 +1,32 @@
+Name: ja-JP-KeitaNeural
+Gender: Male
+
+Name: ja-JP-NanamiNeural
+Gender: Female
+
+Name: ja-JP-AoiNeural                       
+Gender:Female                       
+
+Name: ja-JP-DaichiNeural                    
+Gender:Male
+
+Name: ja-JP-KeitaNeural                     
+Gender:Male                          
+
+Name: ja-JP-MayuNeural                      
+Gender:Female                        
+
+Name: ja-JP-NanamiNeural                    
+Gender:Female                       
+
+Name: ja-JP-NaokiNeural                     
+Gender:Male
+
+Name: ja-JP-ShioriNeural                    
+Gender:Female
+
+Name: vi-VN-HoaiMyNeural
+Gender: Female
+
+Name: vi-VN-NamMinhNeural
+Gender: Male

@@ -5,12 +5,15 @@ Dự án xử lý video với 2 module chính sử dụng JavaScript/Node.js:
 ## 🎯 Tổng quan
 
 ### Module 1: Upload Video to YouTube
+
 - **Upload video lên YouTube**: Tự động upload video và nhận video ID
 
 ### Module 2: Download Subtitle from YouTube
+
 - **Download subtitle**: Tải file SRT từ link video YouTube đã có subtitle
 
 ### Module 3: Script Generator
+
 - **Tạo kịch bản tóm tắt**: Từ video gốc hoặc file SRT, tạo bản tóm tắt hấp dẫn
 - **Tạo kịch bản review**: Viết review chuyên nghiệp theo phong cách reviewer
 
@@ -27,6 +30,7 @@ npm install
 ## ⚙️ Cấu hình
 
 ### 1. File .env
+
 Tạo file `.env` trong thư mục gốc và điền thông tin:
 
 ```env
@@ -44,6 +48,7 @@ PORT=3000
 ```
 
 ### 2. YouTube API Setup
+
 1. Truy cập [Google Cloud Console](https://console.cloud.google.com/)
 2. Tạo project mới hoặc chọn project hiện có
 3. Kích hoạt YouTube Data API v3
@@ -51,11 +56,13 @@ PORT=3000
 5. Thêm `http://localhost:3000/oauth2callback` vào Authorized redirect URIs
 
 ### 3. Gemini API Setup
+
 1. Truy cập [Google AI Studio](https://makersuite.google.com/app/apikey)
 2. Tạo API key mới
 3. Copy API key vào file `.env`
 
 ### 4. FFmpeg (cho xử lý video)
+
 ```bash
 # macOS
 brew install ffmpeg
@@ -86,6 +93,7 @@ Server sẽ chạy tại `http://localhost:3000`
 ### Module 1: Upload Video to YouTube
 
 #### Upload Video lên YouTube
+
 ```http
 POST /upload-video
 Content-Type: multipart/form-data
@@ -97,6 +105,7 @@ Form data:
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -109,11 +118,13 @@ Form data:
 ### Module 2: Download Subtitle from YouTube
 
 #### Download SRT từ Video ID
+
 ```http
 GET /download-srt/:videoId
 ```
 
 #### Download SRT từ URL đầy đủ
+
 ```http
 POST /download-srt-url
 Content-Type: application/json
@@ -128,6 +139,7 @@ Content-Type: application/json
 ### Module 3: Script Generator
 
 #### Tạo kịch bản tóm tắt
+
 ```http
 POST /generate-summary
 Content-Type: multipart/form-data
@@ -138,6 +150,7 @@ Form data:
 ```
 
 **Response:**
+
 ```json
 {
   "summary": "Nội dung kịch bản tóm tắt..."
@@ -145,6 +158,7 @@ Form data:
 ```
 
 #### Tạo kịch bản review
+
 ```http
 POST /generate-review
 Content-Type: multipart/form-data
@@ -155,6 +169,7 @@ Form data:
 ```
 
 **Response:**
+
 ```json
 {
   "review": "Nội dung kịch bản review..."
@@ -162,6 +177,7 @@ Form data:
 ```
 
 ### Health Check
+
 ```http
 GET /health
 ```
@@ -190,6 +206,8 @@ video-script-generator/
 │   ├── downloaded-subtitles/ # Output module download/subtitle
 │   ├── generated-scripts/    # module script-generator (Gemini) xuất kịch bản JSON/markdown
 │   ├── uploaded-videos/      # module upload lên YT/TikTok lưu log
+│   ├── match-script-srt/     # module tìm khung timeline khớp với script
+|   └── voice/                # module tạo voice + json
 ├── index.js                  # Server chính
 ├── test.js                   # File test API
 ├── package.json
