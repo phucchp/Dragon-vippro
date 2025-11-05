@@ -1,0 +1,1 @@
+youtube-upload --title="Video test" "/Users/phuc.cao/Desktop/Luna/video-test/4/phucpro.mp4" --client-secrets=./client_secrets.json
