@@ -42,4 +42,17 @@ function txtToJson(inputPath, outputPath = null) {
   return jsonArray;
 }
 
+async function uploadFileToGemini(
+  inputPath,
+  aiKey = process.env.GEMINI_API_KEY
+) {
+  const fileName = path.basename(inputPath);
+  const fileContent = fs.readFileSync(inputPath, "utf8");
+
+  // TODO: upload to gemini
+  return {
+    url: "https://example.com",
+  };
+}
+
 module.exports = { txtToJson };

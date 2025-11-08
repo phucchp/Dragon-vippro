@@ -9,22 +9,38 @@ const exec = require("child_process");
  * @returns {Array} - Mảng JSON kết quả
  */
 function txtToJson(inputPath, outputPath = null) {
-  // Đọc toàn bộ nội dung file .txt
+  if (!fs.existsSync(inputPath)) {
+    console.error("❌ Không tìm thấy file:", inputPath);
+    return;
+  }
+  //make output path if not exist
+  if (!fs.existsSync(path.dirname(outputPath))) {
+    fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+  }
+
   const text = fs.readFileSync(inputPath, "utf-8");
 
-  // Tách từng dòng và loại bỏ dòng trống
-  const lines = text
-    .split(/\r?\n/)
-    .map((line) => line.trim())
-    .filter((line) => line.length > 0);
+  // Split text into sentences (basic sentence tokenizer)
+  function splitIntoSentences(input) {
+    // Normalize whitespace
+    const normalized = input.replace(/\s+/g, " ").trim();
+    if (!normalized) return [];
 
-  // Chuyển thành mảng các object {content}
-  const jsonArray = lines.map((line, idx) => ({
+    // Match sentences including trailing punctuation and possible closing quotes/brackets
+    // This is a lightweight regex and won't handle every edge-case (e.g., some abbreviations),
+    // but works well for typical subtitle/transcript text.
+    const sentenceRegex = /[^.!?]+[.!?]+["')\]]*|[^.!?]+$/g;
+    const matches = normalized.match(sentenceRegex) || [];
+    return matches.map((s) => s.trim()).filter((s) => s.length > 0);
+  }
+
+  const sentences = splitIntoSentences(text);
+
+  const jsonArray = sentences.map((sentence, idx) => ({
     scriptIdx: idx,
-    content: line,
+    content: sentence,
   }));
 
-  // Nếu có outputPath thì ghi ra file
   if (outputPath) {
     fs.writeFileSync(outputPath, JSON.stringify(jsonArray, null, 2), "utf-8");
     console.log(`✅ Đã lưu JSON tại: ${outputPath}`);

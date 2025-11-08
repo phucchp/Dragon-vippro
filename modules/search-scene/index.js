@@ -4,9 +4,10 @@ const path = require("path");
 const fs = require("fs");
 
 const { txtToJson } = require("./helper");
-const { searchSceneMatchScript } = require("./search-scene");
+const { searchSceneMatchScriptPrompt } = require("./search-scene");
 
-const GEMINI_MODEL = "gemini-2.5-flash";
+const GEMINI_MODEL = "gemini-embedding-001";
+const OUTPUT_DIMS = 768; // tiết kiệm lưu trữ & tăng tốc (có thể 1536/3072)
 
 // ====== CLI ======
 const videoId = process.argv[2];
@@ -63,7 +64,20 @@ async function main() {
 
   txtToJson(scriptPath, scriptJsonPath);
 
-  await searchSceneMatchScript(scriptJsonPath, srtPath, apiKey, GEMINI_MODEL);
+  const outputMatchPath = path.join(
+    __dirname,
+    "../../outputs/search-scene",
+    videoId,
+    "match.json"
+  );
+
+  await searchSceneMatchScriptPrompt(
+    scriptJsonPath,
+    srtPath,
+    promptPath,
+    apiKey,
+    GEMINI_MODEL
+  );
 }
 
 main().catch((err) => {
