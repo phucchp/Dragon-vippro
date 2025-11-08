@@ -75,8 +75,8 @@ async function main() {
     scriptJsonPath,
     srtPath,
     promptPath,
-    apiKey,
-    GEMINI_MODEL
+    outputMatchPath,
+    apiKey
   );
 }
 

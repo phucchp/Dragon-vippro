@@ -1,5 +1,6 @@
 const path = require("path");
 const fs = require("fs");
+const { GoogleAIFileManager } = require("@google/generative-ai/server");
 
 function txtToJson(inputPath, outputPath = null) {
   if (!fs.existsSync(inputPath)) {
@@ -42,17 +43,70 @@ function txtToJson(inputPath, outputPath = null) {
   return jsonArray;
 }
 
-async function uploadFileToGemini(
-  inputPath,
-  aiKey = process.env.GEMINI_API_KEY
-) {
-  const fileName = path.basename(inputPath);
-  const fileContent = fs.readFileSync(inputPath, "utf8");
+class FileUploader {
+  initGoogleFileManager(apiKey) {
+    return new GoogleAIFileManager(apiKey);
+  }
 
-  // TODO: upload to gemini
-  return {
-    url: "https://example.com",
-  };
+  async checkFileStatus(apiKey, fileId) {
+    const fileManager = this.initGoogleFileManager(apiKey);
+    let status = "PROCESSING";
+    const maxRetries = 12; // Số lần thử tối đa (5 giây x 12 = 60 giây)
+    let attempts = 0;
+
+    while (status === "PROCESSING" && attempts < maxRetries) {
+      const fileStatus = await fileManager.getFile(fileId);
+      status = fileStatus.state;
+
+      if (status === "ACTIVE") {
+        return; // File đã sẵn sàng
+      }
+
+      if (status === "FAILED") {
+        throw new InternalServerErrorException(
+          `File processing failed for file ID: ${fileId}`
+        );
+      }
+
+      attempts++;
+      await new Promise((resolve) => setTimeout(resolve, 5000)); // Chờ 5 giây trước khi thử lại
+    }
+
+    // Nếu vòng lặp kết thúc mà file chưa chuyển sang trạng thái 'ACTIVE', báo lỗi
+    if (status !== "ACTIVE") {
+      throw new InternalServerErrorException(
+        `File processing timed out for file ID: ${fileId}. Last known state: ${status}`
+      );
+    }
+  }
+
+  async uploadFile(apiKey, path, mimeType) {
+    if (!apiKey || !path || !mimeType) {
+      throw new Error("API key, file path, and MIME type are required.");
+    }
+    const fileManager = this.initGoogleFileManager(apiKey);
+    const uploadResult = await fileManager.uploadFile(path, {
+      mimeType,
+      displayName: path,
+    });
+
+    const file = uploadResult.file;
+    await this.checkFileStatus(apiKey, file.name);
+    const fileStatus = await fileManager.getFile(file.name);
+    return fileStatus;
+  }
 }
 
-module.exports = { txtToJson };
+async function uploadFileGemini(apiKey, filePath, mimeType) {
+  const uploader = new FileUploader();
+
+  try {
+    const uploadedFile = await uploader.uploadFile(apiKey, filePath, mimeType);
+    console.log("File uploaded successfully:", uploadedFile);
+    return uploadedFile;
+  } catch (error) {
+    console.error("Error uploading file:", error.message);
+  }
+}
+
+module.exports = { txtToJson, uploadFileGemini };
