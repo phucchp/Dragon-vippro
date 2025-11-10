@@ -6,9 +6,6 @@ const fs = require("fs");
 const { txtToJson } = require("./helper");
 const { searchSceneMatchScriptPrompt } = require("./search-scene");
 
-const GEMINI_MODEL = "gemini-embedding-001";
-const OUTPUT_DIMS = 768; // tiết kiệm lưu trữ & tăng tốc (có thể 1536/3072)
-
 // ====== CLI ======
 const videoId = process.argv[2];
 if (!videoId) {
@@ -28,7 +25,7 @@ async function main() {
     __dirname,
     "../../outputs/downloaded-subtitles",
     videoId,
-    `${videoId}.txt`
+    `${videoId}.json`
   );
   const promptPath = path.join(
     __dirname,

@@ -14,7 +14,7 @@ Output: outputs/generated-scripts/{video_id}/script.txt
 
 Step 3 (Long): Build vector database để search giữa kịch bản tóm tắt với SRT -> Timeline
 Input: outputs/generated-scripts/{video_id}/script.txt + outputs/downloaded-subtitles/{video_id}/
-Output: outputs/search-scene/{video_id}/script.json
+Output: outputs/search-scene/{video_id}/match.json
 
 Step 4(T): Chuyển kịch bản tóm tắt ban đầu thành audio
 Step 5(T): Xuất 1 file meta data để cho biết duration từng câu đọc
@@ -24,7 +24,14 @@ Output: outputs/voice/{video_id}/voice/
 Step 6(Long): Chọn cảnh phù hợp cho từng câu tóm tắt dựa vào video gốc + Step 3
 Cắt cảnh dựa vào step 5 + step 3
 Ví dụ: câu đọc 6s (step5) + step 3 duration vượt quá 6s -> Cắt cho đủ 6s
-Output:
+Input:
+match.json: outputs/search-scene/{video_id}/match.json
+scene_script_voice.json: outputs/voice/{video_id}/voice/scenes_script_voice.json
+
+Output: outputs/normalized-scene/{video_id}/cut.json
+
+Step 7:
+Input:
 
 Câu 1 - duration - timeline
 Câu 2 - duration - timeline

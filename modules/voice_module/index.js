@@ -57,22 +57,18 @@ function txtToJson(inputPath, outputPath = null) {
 function main() {
   const videoId = process.argv[2];
   const inputPath = path.join(
-    // __dirname,
+    __dirname,
     "../../outputs/generated-scripts",
     videoId,
     "script.txt"
   );
   //make output dir if not exist
-  const outputDir = path.join(
-    // __dirname,
-    "../../outputs/voice",
-    videoId
-  );
+  const outputDir = path.join(__dirname, "../../outputs/voice", videoId);
   if (!fs.existsSync(outputDir)) {
     fs.mkdirSync(outputDir, { recursive: true });
   }
   const outputJsonPath = path.join(
-    // __dirname,
+    __dirname,
     "../../outputs/voice",
     videoId,
     "voice.json"
@@ -81,7 +77,7 @@ function main() {
 
   // run tts.exe by cli
 
-  const ttsPath = path.join("tts.exe");
+  const ttsPath = path.join(__dirname, "tts.exe");
   // ./tts.exe ..\\..\\outputs\\voice\\video-1\\voice.json ..\\..\\outputs\\voice\\video-1\\scenes_script_voice.json --voice vi-VN-HoaiMyNeural --rate +0% --volume +0% --out_dir ..\\..\\outputs\\voice\\video-1\\out_voice
   const outputPath = path.join(outputDir, "scenes_script_voice.json");
   const voiceFilePath = path.join(outputDir, "out_voice");
